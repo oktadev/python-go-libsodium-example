@@ -17,16 +17,20 @@ class Encoder :
         file.close()
         return data
 
-    def encrypt(self, textfile, encfile):
+    def encrypt(self, textfile, encfile, noncefile):
         box = Box(self.sk, self.pk)
         tfile = open(textfile, 'rb')
         text = tfile.read()
         tfile.close()
-        etext = box.encrypt(text)
+        nonce = nacl.utils.random(Box.NONCE_SIZE)
+        nfile = open(noncefile, 'wb')
+        nfile.write(nonce)
+        nfile.close()
+        etext = box.encrypt(text, nonce)
         efile = open(encfile, 'wb')
         efile.write(etext)
         efile.close()
 
 encode = Encoder('alice', 'bob')
-encode.encrypt('Jabberwocky.txt', 'message.enc')
+encode.encrypt('Jabberwocky.txt', 'message.enc', 'message.nonce')
 print('Done!')
