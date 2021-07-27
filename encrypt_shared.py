@@ -4,11 +4,10 @@ from nacl.encoding import HexEncoder
 from nacl.secret import SecretBox
 import sys
 
-class Encoder :
+class Encrypter :
     def __init__(self):
-        self.key = nacl.utils.random(SecretBox.KEY_SIZE)
-        file = open('key_secret', 'wb')
-        file.write(self.key)
+        file = open('key_secret', 'rb')
+        self.key = file.read()
         file.close()
 
     def encrypt(self, textfile, encfile):
@@ -21,6 +20,6 @@ class Encoder :
         efile.write(etext)
         efile.close()
 
-encode = Encoder()
-encode.encrypt('Jabberwocky.txt', 'message.sec')
+encrypter = Encrypter()
+encrypter.encrypt('Jabberwocky.txt', 'message.sec')
 print('Done!')

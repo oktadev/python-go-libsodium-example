@@ -3,34 +3,30 @@ from nacl.public import PrivateKey, PublicKey, Box
 from nacl.encoding import HexEncoder
 import sys
 
-class Encoder :
+class EncryptFile :
     def __init__(self, sender, receiver):
         self.sender = sender
         self.receiver = receiver
-        self.sk = PrivateKey(self.getKey(sender, 'sk'), encoder=HexEncoder)
-        self.pk = PublicKey(self.getKey(receiver, 'pk'), encoder=HexEncoder)
+        self.sk = PrivateKey(self.get_key(sender, 'sk'), encoder=HexEncoder)
+        self.pk = PublicKey(self.get_key(receiver, 'pk'), encoder=HexEncoder)
 
-    def getKey(self, name, suffix):
+    def get_key(self, name, suffix):
         filename = 'key_' + name + '_' + suffix
         file = open(filename, 'rb')
         data = file.read()
         file.close()
         return data
 
-    def encrypt(self, textfile, encfile, noncefile):
+    def encrypt(self, textfile, encfile):
         box = Box(self.sk, self.pk)
         tfile = open(textfile, 'rb')
         text = tfile.read()
         tfile.close()
-        nonce = nacl.utils.random(Box.NONCE_SIZE)
-        nfile = open(noncefile, 'wb')
-        nfile.write(nonce)
-        nfile.close()
-        etext = box.encrypt(text, nonce)
+        etext = box.encrypt(text)
         efile = open(encfile, 'wb')
         efile.write(etext)
         efile.close()
 
-encode = Encoder('alice', 'bob')
-encode.encrypt('Jabberwocky.txt', 'message.enc', 'message.nonce')
+encrypter = EncryptFile('alice', 'bob')
+encrypter.encrypt('Jabberwocky.txt', 'message.enc')
 print('Done!')

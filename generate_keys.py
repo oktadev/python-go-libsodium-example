@@ -9,7 +9,7 @@ def write(name, hex, sp):
     file.write(hex)
     file.close()
 
-def makekeys(name):
+def make_keys(name):
     sk = PrivateKey.generate()
     write(name, sk.encode(encoder=HexEncoder), 'sk')
     pk = sk.public_key
@@ -19,4 +19,4 @@ if len(sys.argv) != 2:
     print("Usage:", sys.argv[0], "name")
     sys.exit()
 
-makekeys(sys.argv[1])
+make_keys(sys.argv[1])
